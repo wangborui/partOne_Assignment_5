@@ -11,8 +11,7 @@ import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.SET;
-import edu.princeton.cs.algs4.StdDraw;
-
+ 
 /**
  *
  * @author Borui Wang
@@ -52,7 +51,7 @@ public class PointSET {
     public void draw() // draw all points to standard draw
     {
          for(Point2D point:points){
-        	 StdDraw.point(point.x(), point.y());
+        	 point.draw();
          }
     }
 
@@ -94,7 +93,7 @@ public class PointSET {
 
     public static void main(String[] args) // unit testing of the methods (optional)
     {
-    	 String filename = "C:\\Users\\boruiwang\\Desktop\\Borui Wang\\Interviews\\Coursera\\kdtree-testing\\kdtree\\circle4.txt";
+    	 String filename = "C:\\Users\\Borui Wang\\Desktop\\Borui Wang\\Coursera\\part1_week5\\kdtree-testing\\kdtree\\circle4.txt";
          In in = new In(filename);
 
  

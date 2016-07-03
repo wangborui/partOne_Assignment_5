@@ -8,6 +8,7 @@ package partOne_Assignment_5;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
 /**
@@ -18,6 +19,8 @@ public class KdTree {
 
     private Node root;
     private int N;
+    private static final boolean LB = true;
+    private static final boolean RT = false;
 
     private static class Node {
 
@@ -55,37 +58,52 @@ public class KdTree {
         if (p == null) {
             throw new java.lang.NullPointerException("insert() has null argument");
         }
-        root = insert(root, p, true);
+        root = insert(root, p, null, true,false);
     }
 
-    private Node insert(Node n, Point2D p, boolean isVertical) {
-        if (n == null) {
-            N++;
-            return new Node(p, null, null, null);
+    private Node insert(Node n, Point2D p, Node prevNode, boolean isVertical, boolean isLB) {
+    	int cmp;
+    	//insert a new node
+    	//public    RectHV(double xmin, double ymin, double xmax, double ymax)      
+    	// construct the rectangle [xmin, xmax] x [ymin, ymax] 
+    	 if (n == null) {
+    		//root node is null
+	    	if(prevNode == null){
+	    		RectHV rect = new RectHV(0,0,1,1);
+	    		return new Node(p, rect, null, null);
+	    	}
+	    	else if(isVertical){
+            	RectHV rect = new RectHV(
+            			 prevNode.rect.xmin()
+            			,isLB?prevNode.rect.ymin():prevNode.p.y()
+            			,prevNode.rect.xmax()
+            			,isLB?prevNode.p.y():prevNode.rect.ymax());
+            	return new Node(p, rect, null, null);
+            }else{
+            	RectHV rect = new RectHV(
+            			isLB?prevNode.rect.xmin():prevNode.p.x()
+            			,prevNode.rect.ymin()
+            			,isLB?prevNode.p.x():prevNode.rect.xmax()
+            			,prevNode.rect.ymax());
+            	return new Node(p, rect, null, null);
+            }
         } else if (isVertical) {
             Double nodeX = n.p.x();
             Double pX = p.x();
-
-            int cmp = pX.compareTo(nodeX);
-            if (cmp < 0) {
-                n.lb = insert(n.lb, p, !isVertical);
-            } else {
-                n.rt = insert(n.rt, p, !isVertical);
-            }
-
+            cmp = pX.compareTo(nodeX);
         } else {
             Double nodeY = n.p.y();
             Double pY = p.y();
-
-            int cmp = pY.compareTo(nodeY);
-            if (cmp < 0) {
-                n.lb = insert(n.lb, p, !isVertical);
-            } else {
-                n.rt = insert(n.rt, p, !isVertical);
-            }
+            cmp = pY.compareTo(nodeY);
+        }
+        if (cmp < 0) {
+            n.lb = insert(n.lb, p,n, !isVertical,LB);
+        } else {
+            n.rt = insert(n.rt, p,n, !isVertical,RT);
         }
         return n;
     }
+
 
     public boolean contains(Point2D p) // does the set contain point p?
     {
@@ -126,9 +144,34 @@ public class KdTree {
 
     public void draw() // draw all points to standard draw
     {
-
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setPenRadius(.01);
+        draw(root,true);
     }
-
+    
+    private void draw(Node n, boolean isVertical){
+   
+        
+        if(n != null){
+            //draw the point first
+            StdDraw.setPenColor(StdDraw.BLACK);
+            StdDraw.setPenRadius(.01);
+            n.p.draw();
+            //draw the separating line
+            if(isVertical){
+                StdDraw.setPenColor(StdDraw.RED);
+                StdDraw.setPenRadius(.001);
+                StdDraw.line(n.p.x(), n.rect.ymin() , n.p.x(), n.rect.ymax());
+            }
+            else{
+                StdDraw.setPenColor(StdDraw.BLUE);
+                StdDraw.setPenRadius(.001);
+                StdDraw.line(n.rect.xmin(), n.p.y() , n.rect.xmax(), n.p.y());
+            }
+            draw(n.lb,!isVertical);
+            draw(n.rt,!isVertical);
+        }
+    }
     public Iterable<Point2D> range(RectHV rect) // all points that are inside the rectangle
     {
         if (rect == null) {
@@ -152,7 +195,7 @@ public class KdTree {
 
     public static void main(String[] args) // unit testing of the methods (optional)
     {
-        String filename = "C:\\Users\\Borui Wang\\Desktop\\Borui Wang\\Coursera\\part1_week5\\kdtree-testing\\kdtree\\circle4.txt";
+        String filename = "C:\\Users\\Borui Wang\\Desktop\\Borui Wang\\Coursera\\part1_week5\\kdtree-testing\\kdtree\\circle10.txt";
         In in = new In(filename);
         // initialize the two data structures with point from standard input
         KdTree kd = new KdTree();
@@ -163,6 +206,7 @@ public class KdTree {
             kd.insert(p);
         }
 
-        StdOut.println(kd.contains(new Point2D(0.0 , 0.53 )));
+        StdOut.println(kd.contains(new Point2D(0.0 , 0.5 )));
+        kd.draw();
     }
 }
