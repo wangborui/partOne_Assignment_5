@@ -178,21 +178,21 @@ public class KdTree {
         if (rect == null) {
             throw new java.lang.NullPointerException("range() has null argument");
         }
-        
-        Queue<Node> queue = new Queue<>();
-        Queue<Point2D> range = new Queue<>();
-        queue.enqueue(root);
-        while(!queue.isEmpty()){
-            Node temp = queue.dequeue();
-            if(rect.contains(temp.p)) range.enqueue(temp.p);
-            if(temp.lb != null)
-                if(rect.intersects(temp.lb.rect)) queue.enqueue(temp.lb);
-            if(temp.rt != null)
-                if(rect.intersects(temp.rt.rect)) queue.enqueue(temp.rt);
-        }
-        return range;
+       Queue<Point2D> queue = new Queue();
+       range(root, rect, queue);
+       return queue;
     }
-
+    private Iterable<Point2D> range(Node n, RectHV rect, Queue<Point2D> it){
+        if(n == null)
+            return it;
+        
+        if(rect.contains(n.p))
+            it.enqueue(n.p);
+        
+        range(n.lb,rect,it);
+        range(n.rt,rect,it);
+        return it;
+    }
     public Point2D nearest(Point2D p) // a nearest neighbor in the set to point p; null if the set is empty
     {
         if (p == null) {
