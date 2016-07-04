@@ -7,6 +7,7 @@ package partOne_Assignment_5;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
@@ -177,8 +178,19 @@ public class KdTree {
         if (rect == null) {
             throw new java.lang.NullPointerException("range() has null argument");
         }
-
-        return null;
+        
+        Queue<Node> queue = new Queue<>();
+        Queue<Point2D> range = new Queue<>();
+        queue.enqueue(root);
+        while(!queue.isEmpty()){
+            Node temp = queue.dequeue();
+            if(rect.contains(temp.p)) range.enqueue(temp.p);
+            if(temp.lb != null)
+                if(rect.intersects(temp.lb.rect)) queue.enqueue(temp.lb);
+            if(temp.rt != null)
+                if(rect.intersects(temp.rt.rect)) queue.enqueue(temp.rt);
+        }
+        return range;
     }
 
     public Point2D nearest(Point2D p) // a nearest neighbor in the set to point p; null if the set is empty
@@ -189,7 +201,20 @@ public class KdTree {
         if (isEmpty()) {
             return null;
         }
-
+//        Queue<Node> queue = new Queue();
+//        queue.enqueue(root);
+//        double shortest = Double.POSITIVE_INFINITY;
+//        Point2D result = null;
+//        while(!queue.isEmpty()){
+//            Node temp = queue.dequeue();
+//           
+//            if(temp.p.distanceTo(p) < shortest){
+//                shortest = temp.p.distanceTo(p);
+//                result = temp.p;
+//            }
+//            if(temp.lb.rect.contains(p)) queue.enqueue(temp.lb);
+//            else queue.enqueue(temp.rt);
+//        }
         return null;
     }
 
@@ -208,5 +233,7 @@ public class KdTree {
 
         StdOut.println(kd.contains(new Point2D(0.0 , 0.5 )));
         kd.draw();
+        RectHV test = new RectHV(0.0,0.0,0.6,0.9);
+        StdOut.println(kd.range(test));
     }
 }
