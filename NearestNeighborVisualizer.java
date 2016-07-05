@@ -18,20 +18,20 @@ import edu.princeton.cs.algs4.StdDraw;
 public class NearestNeighborVisualizer {
 
     public static void main(String[] args) {
-    	String filename = "C:\\Users\\Borui Wang\\Desktop\\Borui Wang\\Coursera\\part1_week5\\kdtree-testing\\kdtree\\circle10.txt";
+    	String filename = "C:\\Users\\Borui Wang\\Desktop\\Borui Wang\\Coursera\\part1_week5\\kdtree-testing\\kdtree\\vertical7.txt";
         In in = new In(filename);
         
         StdDraw.show(0);
         
         // initialize the two data structures with point from standard input
-        PointSET brute = new PointSET();
-        //KdTree kdtree = new KdTree();
+        //PointSET brute = new PointSET();
+        KdTree kdtree = new KdTree();
         while (!in.isEmpty()) {
             double x = in.readDouble();
             double y = in.readDouble();
             Point2D p = new Point2D(x, y);
-            //kdtree.insert(p);
-            brute.insert(p);
+            kdtree.insert(p);
+            //brute.insert(p);
         }
  
         while (true) {
@@ -45,17 +45,18 @@ public class NearestNeighborVisualizer {
             StdDraw.clear();
             StdDraw.setPenColor(StdDraw.BLACK);
             StdDraw.setPenRadius(.01);
-            brute.draw();
+            //brute.draw();
+            kdtree.draw();
 
             // draw in red the nearest neighbor (using brute-force algorithm)
             StdDraw.setPenRadius(.03);
             StdDraw.setPenColor(StdDraw.RED);
-            brute.nearest(query).draw();
+            //brute.nearest(query).draw();
             StdDraw.setPenRadius(.02);
 
             // draw in blue the nearest neighbor (using kd-tree algorithm)
-//            StdDraw.setPenColor(StdDraw.BLUE);
-//            kdtree.nearest(query).draw();
+            StdDraw.setPenColor(StdDraw.BLUE);
+            kdtree.nearest(query).draw();
             StdDraw.show(0);
             StdDraw.show(40);
         }
