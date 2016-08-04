@@ -147,6 +147,7 @@ public class KdTree {
     {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setPenRadius(.01);
+        
         draw(root,true);
     }
     
@@ -158,6 +159,7 @@ public class KdTree {
             StdDraw.setPenColor(StdDraw.BLACK);
             StdDraw.setPenRadius(.01);
             n.p.draw();
+            StdDraw.text(n.p.x(), n.p.y(), ""+n.p);
             //draw the separating line
             if(isVertical){
                 StdDraw.setPenColor(StdDraw.RED);
@@ -207,22 +209,31 @@ public class KdTree {
         // only explore node if it can contain a point closer than the champion
         if (node.rect.distanceSquaredTo(queryPoint) < queryPoint.distanceSquaredTo(champion)) {
             // query point is left or below node point
-            if (compareX) {
+            if ((compareX && queryPoint.x() < node.p.x()) ||
+                    (!compareX && queryPoint.y() < node.p.y())) {
                 // explore left bottom first
+                StdOut.println("left " +"node point: "+node.p+ " queryPoint: " + queryPoint +" node rect: "+ node.rect +" champion: "+ champion + " compareX: "+compareX);
                 champion = nearest(queryPoint, node.lb, champion, !compareX);
+                StdOut.println("right " +"node point: "+node.p+  " queryPoint: " + queryPoint +" node rect: "+ node.rect +" champion: "+ champion + " compareX: "+compareX);
                 champion = nearest(queryPoint, node.rt, champion, !compareX);
             } else {
                 // query point is right, above, or equal to node point
                 // explore right top first
+                StdOut.println("right " +"node point: "+node.p+  " queryPoint: " + queryPoint +" node rect: "+ node.rect +" champion: "+ champion + " compareX: "+compareX);
                 champion = nearest(queryPoint, node.rt, champion, !compareX);
+                StdOut.println("left " +"node point: "+node.p+  " queryPoint: " + queryPoint +" node rect: "+ node.rect +" champion: "+ champion + " compareX: "+compareX);
                 champion = nearest(queryPoint, node.lb, champion, !compareX);
             }
+//            StdOut.println("right");
+//            champion = nearest(queryPoint, node.rt, champion, !compareX);
+//            StdOut.println("left");
+//                champion = nearest(queryPoint, node.lb, champion, !compareX);
         }
         return champion;
     }
     public static void main(String[] args) // unit testing of the methods (optional)
     {
-        String filename = "C:\\Users\\Borui Wang\\Desktop\\Borui Wang\\Coursera\\part1_week5\\kdtree-testing\\kdtree\\circle4.txt";
+        String filename = "C:\\Users\\Borui Wang\\Desktop\\Borui Wang\\Coursera\\part1_week5\\kdtree-testing\\kdtree\\circle10.txt";
         In in = new In(filename);
         // initialize the two data structures with point from standard input
         KdTree kd = new KdTree();
@@ -233,8 +244,7 @@ public class KdTree {
             kd.insert(p);
         }
 
-        StdOut.println(kd.contains(new Point2D(0.0 , 0.5 )));
-        kd.draw();
+         kd.draw();
 //        RectHV test = new RectHV(0.0,0.0,0.6,0.9);
 //        StdOut.println(kd.range(test));
         StdOut.println("Query Point: (0.9, 0.3) nearest: " + kd.nearest(new Point2D(0.9,0.3)));
